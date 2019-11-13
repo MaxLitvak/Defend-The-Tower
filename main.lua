@@ -9,21 +9,25 @@ function love.load()
   ypos = 200
   speed = 10
   lastSpriteSheet = animationRight
-  moveRight = false
-  moveLeft = false
+  rightKey = false
+  leftKey = false
+  upKey = false
+  downKey = false
 end
 
 function love.update(dt)
-  moveRight = false
-  moveLeft = false
+  leftKey = false 
+  rightKey = false
   if love.keyboard.isDown('left') then
-    moveLeft = true
+    leftKey = true
+    
   end
   if love.keyboard.isDown('right') then
-    moveRight = true
+    rightKey = true
+    leftKey = false
   end
   if xpos > 0.3 then
-		if moveLeft == true then
+		if leftKey == true then
 			xpos = xpos - speed
       animationLeft.currentTime = animationLeft.currentTime + dt
       if animationLeft.currentTime >= animationLeft.duration then
@@ -32,7 +36,7 @@ function love.update(dt)
 		end
 	end
 	if xpos < width - 100 then
-		if moveRight == true then
+		if rightKey == true then
 			xpos = xpos + speed
       animationRight.currentTime = animationRight.currentTime + dt
       if animationRight.currentTime >= animationRight.duration then
@@ -57,14 +61,14 @@ function love.draw()
   love.graphics.draw(tower, 570, 290, .15, .15)
 
   isDrawn = false
-  if moveRight == true and moveLeft == false then
+  if rightKey == true and leftKey == false then
     local spriteNum = math.floor(animationRight.currentTime / animationRight.duration * #animationRight.quads) + 1
     love.graphics.draw(animationRight.spriteSheet, animationRight.quads[spriteNum], xpos, ypos, 0, 4)
     isDrawn = true
     lastSpriteSheet = animationRight
     lastQuad = spriteNum
   end
-  if moveLeft == true and moveRight == false then
+  if leftKey == true and rightKey == false then
     local spriteNum = math.floor(animationLeft.currentTime / animationLeft.duration * #animationLeft.quads) + 1
     love.graphics.draw(animationLeft.spriteSheet, animationLeft.quads[spriteNum], xpos, ypos, 0, 4)
     isDrawn = true
@@ -99,9 +103,15 @@ function newAnimation(image, width, height, row, duration)
 end
 
 function love.keyreleased(key)
-   if key == "escape" then
-      love.event.quit()
-   end
+  if key == 'escape' then
+    love.event.quit()
+  end
+  if key == 'left' then
+    leftKey = false
+  end
+  if key == 'rigth' then
+    rightKey = false
+  end
 end
 
 
